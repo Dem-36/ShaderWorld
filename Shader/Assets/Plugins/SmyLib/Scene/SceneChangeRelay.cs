@@ -1,20 +1,24 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class SceneChangeRelay : MonoBehaviour
 {
     [SerializeField, SceneName]
     private string sceneName = "";
+    [SerializeField, Header("読み込んだ際、シーンをアンロードするか")]
+    private bool isUnload = true;
 
-    //public void Next()
-    //{
-    //    //SceneManagerがない場合は直接読み込む
-    //    if (SceneChangeManager.Instance == null)
-    //        SceneManager.LoadScene(sceneName);
-    //    else
-    //        SceneChangeManager.Instance.Next(sceneName);
-    //}
-
+    /// <summary>
+    /// シーンの読み込み
+    /// </summary>
+    public void Next()
+    {
+        GameManager.Instance.SceneChangeManager.Next(sceneName);
+        if(isUnload == true)
+        {
+            DebugLogger.Log(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
+            GameManager.Instance.SceneChangeManager.Unload(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
+        }
+    }
 }
