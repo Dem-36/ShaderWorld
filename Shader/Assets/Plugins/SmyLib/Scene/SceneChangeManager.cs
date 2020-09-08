@@ -46,11 +46,28 @@ public class SceneChangeManager : MonoBehaviour
     }
 
     /// <summary>
+    /// シーンを読み込み、
+    /// 元のシーンをアンロードする
+    /// </summary>
+    /// <param name="sceneName"></param>
+    /// <param name="unloadSceneName"></param>
+    public void NextToUnloadScene(string sceneName,string unloadSceneName)
+    {
+        if(dontLoadSceneName == sceneName ||
+            dontLoadSceneName == unloadSceneName)
+        {
+            DebugLogger.LogError($"{dontLoadSceneName}は読み込み、解放できません");
+            return;
+        }
+        StartCoroutine(LoadScene(sceneName, true, unloadSceneName));
+    }
+
+    /// <summary>
     /// シーンの読み込み(マルチシーン)
     /// </summary>
     /// <param name="sceneName"></param>
     /// <returns></returns>
-    private IEnumerator LoadScene(string sceneName)
+    private IEnumerator LoadScene(string sceneName,bool isUnload = false,string unloadSceneName = "")
     {
         //すでにhierarchyに存在しているなら
         if (loadSceneNameList.Contains(sceneName) == true)
@@ -62,6 +79,11 @@ public class SceneChangeManager : MonoBehaviour
         AsyncOperation async = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
 
         yield return async;
+
+        if(isUnload == true)
+        {
+            Unload(unloadSceneName);
+        }
     }
 
     /// <summary>
@@ -82,5 +104,8 @@ public class SceneChangeManager : MonoBehaviour
         AsyncOperation async = SceneManager.UnloadSceneAsync(sceneName);
 
         yield return async;
+
+        //リソースの開放
+        yield return Resources.UnloadUnusedAssets();
     }
 }

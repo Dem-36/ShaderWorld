@@ -14,11 +14,21 @@ public class SceneChangeRelay : MonoBehaviour
     /// </summary>
     public void Next()
     {
-        GameManager.Instance.SceneChangeManager.Next(sceneName);
-        if(isUnload == true)
+        if (isUnload == true)
         {
-            DebugLogger.Log(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
-            GameManager.Instance.SceneChangeManager.Unload(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
+            GameManager.Instance.SceneChangeManager.NextToUnloadScene(sceneName, gameObject.scene.name);
         }
+        else
+        {
+            GameManager.Instance.SceneChangeManager.Next(sceneName);
+        }
+    }
+
+    /// <summary>
+    /// シーンのアンロード
+    /// </summary>
+    public void Unload()
+    {
+        GameManager.Instance.SceneChangeManager.Unload(gameObject.scene.name);
     }
 }
