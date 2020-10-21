@@ -5,32 +5,12 @@ using UnityEngine.SceneManagement;
 
 public class TestSceneChange : MonoBehaviour
 {
-    private IEnumerator coroutine = null;
-
-    // Start is called before the first frame update
-    void Start()
+    public void OnClick()
     {
-        SceneManager.LoadScene("SampleScene", LoadSceneMode.Additive);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space) && coroutine == null)
+        var a = GetComponents<SceneChangeRelay>();
+        foreach(var aa in a)
         {
-            coroutine = corou();
-            StartCoroutine(coroutine);
-        }else if (Input.GetKeyDown(KeyCode.A))
-        {
-            SceneManager.LoadScene("SampleScene", LoadSceneMode.Additive);
+            aa.Next();
         }
-    }
-
-    IEnumerator corou()
-    {
-        var op = SceneManager.UnloadSceneAsync("SampleScene");
-        yield return op;
-
-        yield return Resources.UnloadUnusedAssets();
     }
 }
